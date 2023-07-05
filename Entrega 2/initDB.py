@@ -34,7 +34,7 @@ def create_tables(conn):
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS tasks (
                 id SERIAL PRIMARY KEY,
-                epic_id INT NOT NULL,
+                epic_id INT,
                 name VARCHAR(100) NOT NULL,
                 description TEXT NOT NULL,
                 due_date DATE,
