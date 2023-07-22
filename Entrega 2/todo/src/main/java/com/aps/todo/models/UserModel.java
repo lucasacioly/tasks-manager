@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class UserModel {
+public class UserModel{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,4 +59,6 @@ public class UserModel {
     public void setOauthToken(String oauthToken) {
         this.oauthToken = oauthToken;
     }
+
+
 }
