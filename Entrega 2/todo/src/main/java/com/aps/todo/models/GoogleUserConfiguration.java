@@ -16,7 +16,7 @@ public class GoogleUserConfiguration {
         return http
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/").permitAll();
-                    auth.anyRequest().authenticated();
+                    auth.anyRequest().permitAll();//.authenticated();
                 })
                 .oauth2Login(Customizer.withDefaults())
                 .build();

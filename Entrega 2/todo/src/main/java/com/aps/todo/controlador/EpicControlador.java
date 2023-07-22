@@ -1,34 +1,30 @@
-package com.aps.todo.controllers;
+package com.aps.todo.controlador;
 
-import com.aps.todo.Facade;
 import com.aps.todo.models.EpicModel;
 import com.aps.todo.repositories.EpicRepository;
 import com.aps.todo.repositories.EpicRepositoryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-@RestController
-@RequestMapping("/epics")
-public class EpicController {
+@Component
+public class EpicControlador {
 
-    private Facade fachada;
+    private final EpicRepository epicRepository;
 
     @Autowired
-    public EpicController(EpicRepositoryFactory repositoryFactory) {
+    public EpicControlador(EpicRepositoryFactory repositoryFactory) {
         this.epicRepository = repositoryFactory.createEpicRepository();
     }
 
-    @GetMapping
     public ResponseEntity<List<EpicModel>> getAllEpics() {
         List<EpicModel> epics = epicRepository.findAll();
         return new ResponseEntity<>(epics, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
     public ResponseEntity<EpicModel> getEpicById(@PathVariable Long id) {
         EpicModel epic = epicRepository.findById(id).orElse(null);
         if (epic == null) {
@@ -37,13 +33,12 @@ public class EpicController {
         return new ResponseEntity<>(epic, HttpStatus.OK);
     }
 
-    @PostMapping
+
     public ResponseEntity<EpicModel> createEpic(@RequestBody EpicModel epic) {
         EpicModel createdEpic = epicRepository.save(epic);
         return new ResponseEntity<>(createdEpic, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
     public ResponseEntity<EpicModel> updateEpic(@PathVariable Long id, @RequestBody EpicModel epic) {
         if (!epicRepository.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -52,9 +47,11 @@ public class EpicController {
         return new ResponseEntity<>(updatedEpic, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEpic(@PathVariable Long id) {
-        return fachada.deleteEpic(id);
+        if (!epicRepository.existsById(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        epicRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }
