@@ -21,25 +21,30 @@ public class TaskController {
     }
 
     @GetMapping
+    @CrossOrigin
     public ResponseEntity<List<TaskModel>> getAllTasks() {
         return fachada.getAllTasks();
     }
 
+    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<TaskModel> getTaskById(@PathVariable Long id) {
         return fachada.getTaskById(id);
     }
 
     @PostMapping
+    @CrossOrigin
     public ResponseEntity<TaskModel> createTask(@RequestBody TaskModel task) {
         return fachada.postNewTask(task);
     }
 
+    @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<TaskModel> updateTask(@PathVariable Long id, @RequestBody TaskModel task){
         return fachada.putTask(id, task);
     }
 
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         return fachada.deleteTask(id);
