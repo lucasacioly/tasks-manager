@@ -23,26 +23,31 @@ public class EpicController {
     }
 
     @GetMapping
+    @CrossOrigin
     public ResponseEntity<List<EpicModel>> getAllEpics() {
         return fachada.getAllEpics();
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin
     public ResponseEntity<EpicModel> getEpicById(@PathVariable Long id) {
         return fachada.getEpicById(id);
     }
 
     @PostMapping
+    @CrossOrigin
     public ResponseEntity<EpicModel> createEpic(@RequestBody EpicModel epic) {
         return fachada.postNewEpic(epic);
     }
 
     @PutMapping("/{id}")
+    @CrossOrigin
     public ResponseEntity<EpicModel> updateEpic(@PathVariable Long id, @RequestBody EpicModel epic){
         return fachada.putEpic(id, epic);
     }
 
     @DeleteMapping("/{id}")
+    @CrossOrigin
     public ResponseEntity<Void> deleteEpic(@PathVariable Long id) {
         return fachada.deleteEpic(id);
     }
