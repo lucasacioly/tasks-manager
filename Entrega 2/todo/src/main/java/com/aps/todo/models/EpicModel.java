@@ -20,6 +20,15 @@ public class EpicModel implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "user_id", nullable = false)
+    private String userId;
+
+    @Column(name = "total_tasks", nullable = true)
+    private Integer totalTasks;
+
+    @Column(name = "tasks_done", nullable = true)
+    private Integer tasksDone;
+
     // Constructors, getters e setters
 
     public void Epic() {
