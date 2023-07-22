@@ -2,12 +2,12 @@ package com.aps.todo;
 
 import com.aps.todo.controlador.EpicControlador;
 import com.aps.todo.controlador.TaskControlador;
+import com.aps.todo.controlador.UserControlador;
 import com.aps.todo.models.EpicModel;
 import com.aps.todo.models.TaskModel;
-import com.aps.todo.repositories.EpicRepository;
-import com.aps.todo.repositories.EpicRepositoryFactory;
-import com.aps.todo.repositories.TaskRepository;
-import com.aps.todo.repositories.TaskRepositoryFactory;
+import com.aps.todo.models.UserModel;
+import com.aps.todo.repositories.*;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +20,23 @@ public class Facade {
 
     private final EpicRepository epicRepository;
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
 
     private EpicControlador epicControlador;
-
+    private UserControlador userControlador;
     private TaskControlador taskControlador;
 
     @Autowired
-    public Facade(EpicControlador epicControlador, TaskControlador taskControlador, TaskRepositoryFactory taskRepositoryFactory, EpicRepositoryFactory epicRepositoryFactory) {
+    public Facade(EpicControlador epicControlador, TaskControlador taskControlador,
+                  TaskRepositoryFactory taskRepositoryFactory, EpicRepositoryFactory epicRepositoryFactory,
+                  UserRepositoryFactory userRepositoryFactory, UserControlador userControlador) {
         this.epicControlador = epicControlador;
         this.taskControlador = taskControlador;
+        this.userControlador = userControlador;
         this.epicRepository = epicRepositoryFactory.createEpicRepository();
         this.taskRepository = taskRepositoryFactory.createTaskRepository();
+        this.userRepository = userRepositoryFactory.createUserRepository();
     }
 
     //EPICS
@@ -76,4 +81,28 @@ public class Facade {
     public ResponseEntity<Void> deleteTask(Long id){
         return this.taskControlador.deleteTask(id);
     }
+
+    // USERS
+
+    public ResponseEntity<List<UserModel>> getAllUsers(){
+        return this.userControlador.getAllUsers();
+    }
+
+    public ResponseEntity<UserModel> getUserById(Long id){
+        return this.userControlador.getUserById(id);
+    }
+
+    public ResponseEntity<UserModel> postNewUser(UserModel user){
+        return this.userControlador.createUser(user);
+    }
+
+    public ResponseEntity<UserModel> putUser(Long id, UserModel user){
+        return this.userControlador.updateUser(id, user);
+    }
+
+    public ResponseEntity<Void> deleteUser(Long id){
+        return this.userControlador.deleteUser(id);
+    }
+
+    public ResponseEntity<UserModel> signIn(String email, String password){ return this.userControlador.signIn(email, password);}
 }
