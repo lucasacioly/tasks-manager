@@ -18,38 +18,28 @@ public class EpicController {
     private Facade fachada;
 
     @Autowired
-    public EpicController(EpicRepositoryFactory repositoryFactory) {
-        this.epicRepository = repositoryFactory.createEpicRepository();
+    public EpicController(Facade fachada) {
+        this.fachada = fachada;
     }
 
     @GetMapping
     public ResponseEntity<List<EpicModel>> getAllEpics() {
-        List<EpicModel> epics = epicRepository.findAll();
-        return new ResponseEntity<>(epics, HttpStatus.OK);
+        return fachada.getAllEpics();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EpicModel> getEpicById(@PathVariable Long id) {
-        EpicModel epic = epicRepository.findById(id).orElse(null);
-        if (epic == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(epic, HttpStatus.OK);
+        return fachada.getEpicById(id);
     }
 
     @PostMapping
     public ResponseEntity<EpicModel> createEpic(@RequestBody EpicModel epic) {
-        EpicModel createdEpic = epicRepository.save(epic);
-        return new ResponseEntity<>(createdEpic, HttpStatus.CREATED);
+        return fachada.postNewEpic(epic);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EpicModel> updateEpic(@PathVariable Long id, @RequestBody EpicModel epic) {
-        if (!epicRepository.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        EpicModel updatedEpic = epicRepository.save(epic);
-        return new ResponseEntity<>(updatedEpic, HttpStatus.OK);
+    public ResponseEntity<EpicModel> updateEpic(@PathVariable Long id, @RequestBody EpicModel epic){
+        return fachada.putEpic(id, epic);
     }
 
     @DeleteMapping("/{id}")
