@@ -14,19 +14,19 @@ public class EpicModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 100)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id")
     private String userId;
 
-    @Column(name = "total_tasks", nullable = true)
+    @Column(name = "total_tasks")
     private Integer totalTasks;
 
-    @Column(name = "tasks_done", nullable = true)
+    @Column(name = "tasks_done")
     private Integer tasksDone;
 
     // Constructors, getters e setters

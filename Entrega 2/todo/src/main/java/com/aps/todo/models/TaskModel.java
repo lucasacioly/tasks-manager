@@ -13,14 +13,20 @@ public class TaskModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "due_date")
     private LocalDate dueDate;
+
+    @Column(name = "in_progress")
+    private Boolean inProgress;
+
+    @Column(name = "user_id")
+    private String userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "epic_id")

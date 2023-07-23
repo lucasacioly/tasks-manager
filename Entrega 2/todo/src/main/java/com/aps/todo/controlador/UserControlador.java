@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class UserControlador {
@@ -34,6 +34,8 @@ public class UserControlador {
     }
 
     public ResponseEntity<UserModel> createUser(@RequestBody UserModel user) {
+        String token = UUID.randomUUID().toString();
+        user.setOauthToken(token);
         UserModel createdUser = userRepository.save(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
@@ -42,6 +44,7 @@ public class UserControlador {
         if (!userRepository.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        user.setOauthToken(userRepository.getOauthToken(id));
         UserModel updatedUser = userRepository.save(user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
@@ -62,6 +65,33 @@ public class UserControlador {
 
         return new ResponseEntity<>(user, HttpStatus.OK);
 
+    }
+
+    public ResponseEntity<UserModel> googleSignUp(String email, String name){
+        var user = new UserModel();
+        user.setUsername(name);
+        user.setEmail(email);
+
+        String token = UUID.randomUUID().toString();
+        user.setOauthToken(token);
+        user.setPassword(token);
+
+        UserModel createdUser = userRepository.save(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<UserModel> googleSignIn(String email){
+
+        UserModel googleUser = userRepository.GooglesignIn(email);
+        if(googleUser == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(googleUser, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<UserModel> validateUser(String token){
+        var user = userRepository.validateUser(token);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
 

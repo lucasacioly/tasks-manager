@@ -2,55 +2,90 @@ package com.aps.todo.controlador;
 
 import com.aps.todo.models.TaskModel;
 import com.aps.todo.repositories.TaskRepository;
+import com.aps.todo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @Component
 public class TaskControlador {
 
+    private final UserRepository userRepository;
     private final TaskRepository taskRepository;
 
     @Autowired
-    public TaskControlador(TaskRepository taskRepository) {
+    public TaskControlador(UserRepository userRepository, TaskRepository taskRepository) {
+        this.userRepository = userRepository;
         this.taskRepository = taskRepository;
     }
 
-    public ResponseEntity<List<TaskModel>> getAllTasks() {
-        List<TaskModel> tasks = taskRepository.findAll();
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
-    }
+    public ResponseEntity<List<TaskModel>> getAllTasks(String token) {
+        var user = userRepository.validateUser(token);
+        if (user != null){
 
-    public ResponseEntity<TaskModel> getTaskById(@PathVariable Long id) {
-        TaskModel task = taskRepository.findById(id).orElse(null);
-        if (task == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            List<TaskModel> tasks = taskRepository.getUserTasks(user.getId().toString());
+            return new ResponseEntity<>(tasks, HttpStatus.OK);
+
         }
-        return new ResponseEntity<>(task, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
     }
 
-    public ResponseEntity<TaskModel> createTask(@RequestBody TaskModel task) {
-        TaskModel createdTask = taskRepository.save(task);
-        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
-    }
+    public ResponseEntity<TaskModel> getTaskById(String token, Long id) {
+        var user = userRepository.validateUser(token);
+        if (user != null){
 
-    public ResponseEntity<TaskModel> updateTask(@PathVariable Long id, @RequestBody TaskModel task) {
-        if (!taskRepository.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            TaskModel task = taskRepository.findById(id).orElse(null);
+            if (task == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(task, HttpStatus.OK);
+
         }
-        TaskModel updatedTask = taskRepository.save(task);
-        return new ResponseEntity<>(updatedTask, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        if (!taskRepository.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<TaskModel> createTask(String token,  TaskModel task) {
+        var user = userRepository.validateUser(token);
+        if (user != null){
+
+            TaskModel createdTask = taskRepository.save(task);
+            return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+
         }
-        taskRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<TaskModel> updateTask(String token, Long id, TaskModel task) {
+        var user = userRepository.validateUser(token);
+        if (user != null){
+
+            if (!taskRepository.existsById(id)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            TaskModel updatedTask = taskRepository.save(task);
+            return new ResponseEntity<>(updatedTask, HttpStatus.OK);
+
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<Void> deleteTask(String token, Long id) {
+        var user = userRepository.validateUser(token);
+        if (user != null){
+
+            if (!taskRepository.existsById(id)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            taskRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+
     }
 }
 

@@ -40,46 +40,46 @@ public class Facade {
     }
 
     //EPICS
-    public ResponseEntity<List<EpicModel>> getAllEpics(){
-        return this.epicControlador.getAllEpics();
+    public ResponseEntity<List<EpicModel>> getAllEpics(String token){
+        return this.epicControlador.getAllEpics(token);
     }
 
-    public ResponseEntity<EpicModel> getEpicById(Long id){
-        return this.epicControlador.getEpicById(id);
+    public ResponseEntity<EpicModel> getEpicById(String token, Long id){
+        return this.epicControlador.getEpicById(token, id);
     }
 
-    public ResponseEntity<EpicModel> postNewEpic(EpicModel epic){
-        return this.epicControlador.createEpic(epic);
+    public ResponseEntity<EpicModel> postNewEpic(String token, EpicModel epic){
+        return this.epicControlador.createEpic(token, epic);
     }
 
-    public ResponseEntity<EpicModel> putEpic(Long id, EpicModel epic){
-        return this.epicControlador.updateEpic(id, epic);
+    public ResponseEntity<EpicModel> putEpic(String token, Long id, EpicModel epic){
+        return this.epicControlador.updateEpic(token, id, epic);
     }
 
-    public ResponseEntity<Void> deleteEpic(Long id){
-        return this.epicControlador.deleteEpic(id);
+    public ResponseEntity<Void> deleteEpic(String token, Long id){
+        return this.epicControlador.deleteEpic(token, id);
     }
 
     // TASKS
 
-    public ResponseEntity<List<TaskModel>> getAllTasks(){
-        return this.taskControlador.getAllTasks();
+    public ResponseEntity<List<TaskModel>> getAllTasks(String token){
+        return this.taskControlador.getAllTasks(token);
     }
 
-    public ResponseEntity<TaskModel> getTaskById(Long id){
-        return this.taskControlador.getTaskById(id);
+    public ResponseEntity<TaskModel> getTaskById(String token, Long id){
+        return this.taskControlador.getTaskById(token, id);
     }
 
-    public ResponseEntity<TaskModel> postNewTask(TaskModel task){
-        return this.taskControlador.createTask(task);
+    public ResponseEntity<TaskModel> postNewTask(String token, TaskModel task){
+        return this.taskControlador.createTask(token, task);
     }
 
-    public ResponseEntity<TaskModel> putTask(Long id, TaskModel task){
-        return this.taskControlador.updateTask(id, task);
+    public ResponseEntity<TaskModel> putTask(String token, Long id, TaskModel task){
+        return this.taskControlador.updateTask(token, id, task);
     }
 
-    public ResponseEntity<Void> deleteTask(Long id){
-        return this.taskControlador.deleteTask(id);
+    public ResponseEntity<Void> deleteTask(String token, Long id){
+        return this.taskControlador.deleteTask(token, id);
     }
 
     // USERS
@@ -105,4 +105,10 @@ public class Facade {
     }
 
     public ResponseEntity<UserModel> signIn(String email, String password){ return this.userControlador.signIn(email, password);}
+
+    public ResponseEntity<UserModel> googleSignUp(String email, String name){ return this.userControlador.googleSignUp(email,name);}
+
+    public ResponseEntity<UserModel> googleSignIn(String email){ return this.userControlador.googleSignIn(email);}
+
+    public ResponseEntity<UserModel> validateUser(String token){ return this.userControlador.validateUser(token);}
 }

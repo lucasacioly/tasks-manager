@@ -10,16 +10,17 @@ public class UserModel{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "username")
     private String username;
 
-    @Column(nullable = false)
+    @Column(name = "email")
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Column
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String oauthToken;
 
     // getters and setters

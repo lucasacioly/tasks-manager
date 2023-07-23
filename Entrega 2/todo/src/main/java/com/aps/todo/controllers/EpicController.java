@@ -24,32 +24,32 @@ public class EpicController {
 
     @GetMapping
     @CrossOrigin
-    public ResponseEntity<List<EpicModel>> getAllEpics() {
-        return fachada.getAllEpics();
+    public ResponseEntity<List<EpicModel>> getAllEpics(@RequestHeader("token") String token) {
+        return fachada.getAllEpics(token);
     }
 
     @GetMapping("/{id}")
     @CrossOrigin
-    public ResponseEntity<EpicModel> getEpicById(@PathVariable Long id) {
-        return fachada.getEpicById(id);
+    public ResponseEntity<EpicModel> getEpicById(@RequestHeader("token")String token, @PathVariable Long id) {
+        return fachada.getEpicById(token, id);
     }
 
     @PostMapping
     @CrossOrigin
-    public ResponseEntity<EpicModel> createEpic(@RequestBody EpicModel epic) {
-        return fachada.postNewEpic(epic);
+    public ResponseEntity<EpicModel> createEpic(@RequestHeader("token") String token, @RequestBody EpicModel epic) {
+        return fachada.postNewEpic(token, epic);
     }
 
     @PutMapping("/{id}")
     @CrossOrigin
-    public ResponseEntity<EpicModel> updateEpic(@PathVariable Long id, @RequestBody EpicModel epic){
-        return fachada.putEpic(id, epic);
+    public ResponseEntity<EpicModel> updateEpic(@RequestHeader("token") String token, @PathVariable Long id, @RequestBody EpicModel epic){
+        return fachada.putEpic(token, id, epic);
     }
 
     @DeleteMapping("/{id}")
     @CrossOrigin
-    public ResponseEntity<Void> deleteEpic(@PathVariable Long id) {
-        return fachada.deleteEpic(id);
+    public ResponseEntity<Void> deleteEpic(@RequestHeader("token") String token, @PathVariable Long id) {
+        return fachada.deleteEpic(token, id);
     }
 
 }

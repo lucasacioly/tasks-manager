@@ -22,32 +22,32 @@ public class TaskController {
 
     @GetMapping
     @CrossOrigin
-    public ResponseEntity<List<TaskModel>> getAllTasks() {
-        return fachada.getAllTasks();
+    public ResponseEntity<List<TaskModel>> getAllTasks(@RequestHeader("token") String token) {
+        return fachada.getAllTasks(token);
     }
 
     @CrossOrigin
     @GetMapping("/{id}")
-    public ResponseEntity<TaskModel> getTaskById(@PathVariable Long id) {
-        return fachada.getTaskById(id);
+    public ResponseEntity<TaskModel> getTaskById(@RequestHeader("token") String token, @PathVariable Long id) {
+        return fachada.getTaskById(token, id);
     }
 
     @PostMapping
     @CrossOrigin
-    public ResponseEntity<TaskModel> createTask(@RequestBody TaskModel task) {
-        return fachada.postNewTask(task);
+    public ResponseEntity<TaskModel> createTask(@RequestHeader("token") String token, @RequestBody TaskModel task) {
+        return fachada.postNewTask(token, task);
     }
 
     @CrossOrigin
     @PutMapping("/{id}")
-    public ResponseEntity<TaskModel> updateTask(@PathVariable Long id, @RequestBody TaskModel task){
-        return fachada.putTask(id, task);
+    public ResponseEntity<TaskModel> updateTask(@RequestHeader("token") String token, @PathVariable Long id, @RequestBody TaskModel task){
+        return fachada.putTask(token, id, task);
     }
 
     @CrossOrigin
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        return fachada.deleteTask(id);
+    public ResponseEntity<Void> deleteTask(@RequestHeader("token") String token, @PathVariable Long id) {
+        return fachada.deleteTask(token, id);
     }
 
 }
