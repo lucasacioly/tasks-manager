@@ -35,11 +35,13 @@ public class TaskModel implements Serializable {
     // Constructors, getters e setters
     public void Task() {}
 
-    public void Task(String name, String description, LocalDate dueDate, EpicModel  epic) {
+    public void Task(String name, String description, LocalDate dueDate, EpicModel  epic, Boolean inProgress, String userId) {
         this.name = name;
         this.description = description;
         this.dueDate = dueDate;
         this.epic = epic;
+        this.inProgress = inProgress;
+        this.userId = userId;
     }
 
     // Getters and Setters
@@ -78,5 +80,21 @@ public class TaskModel implements Serializable {
 
     public void setEpic(EpicModel  epic) {
         this.epic = epic;
+    }
+
+    public Boolean getInProgress() {
+        return inProgress;
+    }
+
+    public void setInProgress(Boolean inProgress) {
+        this.inProgress = inProgress;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

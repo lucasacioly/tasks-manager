@@ -34,9 +34,12 @@ public class EpicModel implements Serializable {
     public void Epic() {
     }
 
-    public void Epic(String name, String description) {
+    public void Epic(String name, String description, String userId, Integer totalTasks, Integer tasksDone) {
         this.name = name;
         this.description = description;
+        this.tasksDone = tasksDone;
+        this.totalTasks = totalTasks;
+        this.userId = userId;
     }
 
     // Getters and Setters
@@ -59,5 +62,27 @@ public class EpicModel implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getUserId() {return userId;}
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public Integer getTotalTasks() {
+        return totalTasks;
+    }
+
+    public void setTotalTasks(Integer totalTasks) {
+        this.totalTasks = totalTasks;
+    }
+
+    public Integer getTasksDone() {
+        return tasksDone;
+    }
+
+    public void setTasksDone(Integer tasksDone) {
+        this.tasksDone = tasksDone;
     }
 }

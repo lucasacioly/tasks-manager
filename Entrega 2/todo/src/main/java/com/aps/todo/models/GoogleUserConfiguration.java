@@ -1,4 +1,4 @@
-package com.aps.todo.models;
+/*package com.aps.todo.models;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,3 +26,4 @@ public class GoogleUserConfiguration {
                 .build();
     }
 }
+*/

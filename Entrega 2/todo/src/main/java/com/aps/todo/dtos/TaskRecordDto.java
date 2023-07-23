@@ -6,5 +6,6 @@ public record TaskRecordDto(
         Long epicId,
         String name,
         String description,
-        LocalDate dueDate
+        LocalDate dueDate,
+        Boolean inProgress
 ) {}

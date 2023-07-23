@@ -52,6 +52,7 @@ public class TaskControlador {
         var user = userRepository.validateUser(token);
         if (user != null){
 
+            task.setUserId(user.getId().toString());
             TaskModel createdTask = taskRepository.save(task);
             return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
 
@@ -66,6 +67,7 @@ public class TaskControlador {
             if (!taskRepository.existsById(id)) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+            task.setUserId(user.getId().toString());
             TaskModel updatedTask = taskRepository.save(task);
             return new ResponseEntity<>(updatedTask, HttpStatus.OK);
 

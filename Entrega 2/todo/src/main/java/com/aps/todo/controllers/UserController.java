@@ -5,8 +5,8 @@ import com.aps.todo.models.UserModel;
 import com.aps.todo.models.signInParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+//import org.springframework.security.core.annotation.AuthenticationPrincipal;
+//import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class UserController {
         return fachada.signIn(input.email, input.password);
     }
 
-    @GetMapping("/googleSignUp")
+    /*@GetMapping("/googleSignUp")
     public ResponseEntity<UserModel> googleSignUp(@AuthenticationPrincipal OAuth2User principal) {
         String name = principal.getAttribute("name");
         String email = principal.getAttribute("email");
@@ -73,5 +73,5 @@ public class UserController {
         String email = principal.getAttribute("email");
 
         return fachada.googleSignIn(email);
-    }
+    }*/
 }

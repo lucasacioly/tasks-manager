@@ -53,6 +53,7 @@ public class EpicControlador {
         var user = userRepository.validateUser(token);
         if (user != null){
 
+            epic.setUserId(user.getId().toString());
             EpicModel createdEpic = epicRepository.save(epic);
             return new ResponseEntity<>(createdEpic, HttpStatus.CREATED);
 
@@ -68,6 +69,7 @@ public class EpicControlador {
             if (!epicRepository.existsById(id)) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+            epic.setUserId(user.getId().toString());
             EpicModel updatedEpic = epicRepository.save(epic);
             return new ResponseEntity<>(updatedEpic, HttpStatus.OK);
 
