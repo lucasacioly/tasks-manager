@@ -3,6 +3,7 @@ package com.aps.todo;
 import com.aps.todo.controlador.EpicControlador;
 import com.aps.todo.controlador.TaskControlador;
 import com.aps.todo.controlador.UserControlador;
+import com.aps.todo.dtos.TaskRecordDto;
 import com.aps.todo.models.EpicModel;
 import com.aps.todo.models.TaskModel;
 import com.aps.todo.models.UserModel;
@@ -70,11 +71,11 @@ public class Facade {
         return this.taskControlador.getTaskById(token, id);
     }
 
-    public ResponseEntity<TaskModel> postNewTask(String token, TaskModel task){
+    public ResponseEntity<TaskModel> postNewTask(String token, TaskRecordDto task){
         return this.taskControlador.createTask(token, task);
     }
 
-    public ResponseEntity<TaskModel> putTask(String token, Long id, TaskModel task){
+    public ResponseEntity<TaskModel> putTask(String token, Long id, TaskRecordDto task){
         return this.taskControlador.updateTask(token, id, task);
     }
 
@@ -110,5 +111,4 @@ public class Facade {
 
     public ResponseEntity<UserModel> googleSignIn(String email){ return this.userControlador.googleSignIn(email);}
 
-    public ResponseEntity<UserModel> validateUser(String token){ return this.userControlador.validateUser(token);}
 }

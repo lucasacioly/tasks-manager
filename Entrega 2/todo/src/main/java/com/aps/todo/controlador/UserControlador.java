@@ -13,12 +13,23 @@ import java.util.UUID;
 @Component
 public class UserControlador {
 
-    private final UserRepository userRepository;
+    private static UserControlador userControlador;
 
     @Autowired
     public UserControlador(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    @Autowired
+    public static synchronized UserControlador getInstance(UserRepository userRepository){
+        if (userControlador == null)
+            userControlador = new UserControlador(userRepository);
+
+        return userControlador;
+    }
+
+    private final UserRepository userRepository;
+
 
     public ResponseEntity<List<UserModel>> getAllUsers() {
         List<UserModel> users = userRepository.findAll();
@@ -89,9 +100,9 @@ public class UserControlador {
         return new ResponseEntity<>(googleUser, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<UserModel> validateUser(String token){
+    public UserModel validateUser(String token){
         var user = userRepository.validateUser(token);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return user;
     }
 }
 

@@ -7,5 +7,6 @@ public record TaskRecordDto(
         String name,
         String description,
         LocalDate dueDate,
-        Boolean inProgress
+        Boolean inProgress,
+        String userId
 ) {}

@@ -30,12 +30,12 @@ public class TaskModel implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "epic_id")
-    private EpicModel  epic;
+    private EpicModel epic;
 
     // Constructors, getters e setters
     public void Task() {}
 
-    public void Task(String name, String description, LocalDate dueDate, EpicModel  epic, Boolean inProgress, String userId) {
+    public void Task(String name, String description, LocalDate dueDate, EpicModel epic, Boolean inProgress, String userId) {
         this.name = name;
         this.description = description;
         this.dueDate = dueDate;

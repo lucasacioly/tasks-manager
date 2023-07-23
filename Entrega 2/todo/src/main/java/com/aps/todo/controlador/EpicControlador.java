@@ -15,16 +15,16 @@ import java.util.List;
 public class EpicControlador {
 
     private final EpicRepository epicRepository;
-    private final UserRepository userRepository;
+    private final UserControlador userControlador;
 
     @Autowired
-    public EpicControlador(EpicRepositoryFactory repositoryFactory, UserRepository userRepository) {
-        this.epicRepository = repositoryFactory.createEpicRepository();
-        this.userRepository = userRepository;
+    public EpicControlador(EpicRepository epicRepository, UserRepository userRepository, UserControlador userControlador) {
+        this.epicRepository = epicRepository;
+        this.userControlador = userControlador.getInstance(userRepository);
     }
 
     public ResponseEntity<List<EpicModel>> getAllEpics(String token) {
-        var user = userRepository.validateUser(token);
+        var user = userControlador.validateUser(token);
         if (user != null){
             List<EpicModel> epics = epicRepository.getUserEpics(user.getId().toString());
             return new ResponseEntity<>(epics, HttpStatus.OK);
@@ -33,7 +33,7 @@ public class EpicControlador {
     }
 
     public ResponseEntity<EpicModel> getEpicById(String token, Long id) {
-        var user = userRepository.validateUser(token);
+        var user = userControlador.validateUser(token);
 
         if (user != null){
             EpicModel epic = epicRepository.findById(id).orElse(null);
@@ -50,7 +50,7 @@ public class EpicControlador {
 
 
     public ResponseEntity<EpicModel> createEpic(String token, EpicModel epic) {
-        var user = userRepository.validateUser(token);
+        var user = userControlador.validateUser(token);
         if (user != null){
 
             epic.setUserId(user.getId().toString());
@@ -63,7 +63,7 @@ public class EpicControlador {
     }
 
     public ResponseEntity<EpicModel> updateEpic(String token, Long id, EpicModel epic) {
-        var user = userRepository.validateUser(token);
+        var user = userControlador.validateUser(token);
         if (user != null){
 
             if (!epicRepository.existsById(id)) {
@@ -79,7 +79,7 @@ public class EpicControlador {
     }
 
     public ResponseEntity<Void> deleteEpic(String token, Long id) {
-        var user = userRepository.validateUser(token);
+        var user = userControlador.validateUser(token);
         if (user != null){
 
             if (!epicRepository.existsById(id)) {

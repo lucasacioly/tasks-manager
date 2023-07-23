@@ -1,6 +1,7 @@
 package com.aps.todo.controllers;
 
 import com.aps.todo.Facade;
+import com.aps.todo.dtos.TaskRecordDto;
 import com.aps.todo.models.TaskModel;
 import com.aps.todo.repositories.TaskRepository;
 import com.aps.todo.repositories.TaskRepositoryFactory;
@@ -34,13 +35,13 @@ public class TaskController {
 
     @PostMapping
     @CrossOrigin
-    public ResponseEntity<TaskModel> createTask(@RequestHeader("token") String token, @RequestBody TaskModel task) {
+    public ResponseEntity<TaskModel> createTask(@RequestHeader("token") String token, @RequestBody TaskRecordDto task) {
         return fachada.postNewTask(token, task);
     }
 
     @CrossOrigin
     @PutMapping("/{id}")
-    public ResponseEntity<TaskModel> updateTask(@RequestHeader("token") String token, @PathVariable Long id, @RequestBody TaskModel task){
+    public ResponseEntity<TaskModel> updateTask(@RequestHeader("token") String token, @PathVariable Long id, @RequestBody TaskRecordDto task){
         return fachada.putTask(token, id, task);
     }
 
