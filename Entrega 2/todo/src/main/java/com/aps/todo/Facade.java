@@ -31,13 +31,13 @@ public class Facade {
     @Autowired
     public Facade(EpicControlador epicControlador, TaskControlador taskControlador,
                   TaskRepositoryFactory taskRepositoryFactory, EpicRepositoryFactory epicRepositoryFactory,
-                  UserRepositoryFactory userRepositoryFactory, UserControlador userControlador) {
+                  UserRepositoryFactory userRepositoryFactory) {
         this.epicControlador = epicControlador;
         this.taskControlador = taskControlador;
-        this.userControlador = userControlador;
         this.epicRepository = epicRepositoryFactory.createEpicRepository();
         this.taskRepository = taskRepositoryFactory.createTaskRepository();
         this.userRepository = userRepositoryFactory.createUserRepository();
+        this.userControlador = UserControlador.getInstance(this.userRepository);
     }
 
     //EPICS
@@ -107,8 +107,7 @@ public class Facade {
 
     public ResponseEntity<UserModel> signIn(String email, String password){ return this.userControlador.signIn(email, password);}
 
-    public ResponseEntity<UserModel> googleSignUp(String email, String name){ return this.userControlador.googleSignUp(email,name);}
+    public ResponseEntity<UserModel> googleLogin(String token){ return this.userControlador.googleLogin(token);}
 
-    public ResponseEntity<UserModel> googleSignIn(String email){ return this.userControlador.googleSignIn(email);}
 
 }

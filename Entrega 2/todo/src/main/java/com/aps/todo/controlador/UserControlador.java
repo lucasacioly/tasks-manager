@@ -1,12 +1,21 @@
 package com.aps.todo.controlador;
 
+import com.aps.todo.models.GoogleUserModel;
 import com.aps.todo.models.UserModel;
 import com.aps.todo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import java.io.IOException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -14,10 +23,14 @@ import java.util.UUID;
 public class UserControlador {
 
     private static UserControlador userControlador;
+    private static RestTemplate httpClient;
+    private final UserRepository userRepository;
+
 
     @Autowired
     public UserControlador(UserRepository userRepository) {
         this.userRepository = userRepository;
+        httpClient = new RestTemplate();
     }
 
     @Autowired
@@ -28,7 +41,6 @@ public class UserControlador {
         return userControlador;
     }
 
-    private final UserRepository userRepository;
 
 
     public ResponseEntity<List<UserModel>> getAllUsers() {
@@ -78,26 +90,46 @@ public class UserControlador {
 
     }
 
-    public ResponseEntity<UserModel> googleSignUp(String email, String name){
-        var user = new UserModel();
-        user.setUsername(name);
-        user.setEmail(email);
+    public ResponseEntity<UserModel> googleLogin(String token) {
+        String GOOGLE_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo";
 
-        String token = UUID.randomUUID().toString();
-        user.setOauthToken(token);
-        user.setPassword(token);
+        GoogleUserModel googleResponse = null;
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(GOOGLE_ENDPOINT);
 
-        UserModel createdUser = userRepository.save(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
+            httpGet.setHeader("Authorization", "Bearer " + token);
 
-    public ResponseEntity<UserModel> googleSignIn(String email){
+            HttpResponse response = httpClient.execute(httpGet);
 
-        UserModel googleUser = userRepository.GooglesignIn(email);
-        if(googleUser == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<GoogleUserModel> resp = restTemplate.exchange(
+                    GOOGLE_ENDPOINT,
+                    HttpMethod.GET,
+                    null,
+                    GoogleUserModel.class
+            );
+
+            googleResponse = resp.getBody();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return new ResponseEntity<>(googleUser, HttpStatus.CREATED);
+
+        String oauthtoken = UUID.randomUUID().toString();
+        UserModel user = new UserModel();
+        user.setUsername(googleResponse.getName());
+        user.setEmail(googleResponse.getEmail());
+        user.setPassword(googleResponse.getEmail());
+        user.setOauthToken(oauthtoken);
+
+        var existUser = userRepository.checkByEmail(user.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(existUser, HttpStatus.OK);
+        }
+
+        var userSaved = userRepository.save(user);
+        return new ResponseEntity<>(userSaved, HttpStatus.OK);
     }
 
     public UserModel validateUser(String token){

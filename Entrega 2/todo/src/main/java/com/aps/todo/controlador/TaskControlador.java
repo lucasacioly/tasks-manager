@@ -17,14 +17,13 @@ import java.util.List;
 public class TaskControlador {
 
     private final UserControlador userControlador;
-
     private  final EpicRepository epicRepository;
     private final TaskRepository taskRepository;
 
     @Autowired
-    public TaskControlador(UserControlador userControlador, TaskRepository taskRepository, UserRepository userRepository, EpicRepository epicRepository) {
+    public TaskControlador(TaskRepository taskRepository, UserRepository userRepository, EpicRepository epicRepository) {
         this.epicRepository = epicRepository;
-        this.userControlador = userControlador.getInstance(userRepository);
+        this.userControlador = UserControlador.getInstance(userRepository);
         this.taskRepository = taskRepository;
     }
 
@@ -58,10 +57,13 @@ public class TaskControlador {
         var user = userControlador.validateUser(token);
         if (user != null){
 
-            EpicModel epic = epicRepository.findById(task.epicId()).orElse(null);
             TaskModel taskCreated = new TaskModel();
 
-            taskCreated.setEpic(epic);
+            if(task.epicId() != null){
+                EpicModel epic = epicRepository.findById(task.epicId()).orElse(null);
+                taskCreated.setEpic(epic);
+            }
+
             taskCreated.setName(task.name());
             taskCreated.setDescription(task.description());
             taskCreated.setInProgress(task.inProgress());

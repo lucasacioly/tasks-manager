@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
      UserModel signIn(@Param("email") String email, @Param("password") String password);
 
      @Query("SELECT u FROM UserModel u WHERE u.email = :email")
-     UserModel GooglesignIn(@Param("email") String email);
+     UserModel checkByEmail(@Param("email") String email);
 
      @Query("SELECT u.oauthToken FROM UserModel u WHERE u.id = :id")
      String getOauthToken(@Param("id") Long id);
