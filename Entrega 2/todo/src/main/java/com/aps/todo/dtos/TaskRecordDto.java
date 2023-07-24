@@ -3,6 +3,8 @@ package com.aps.todo.dtos;
 import java.time.LocalDate;
 
 public record TaskRecordDto(
+
+        Long id,
         Long epicId,
         String name,
         String description,
