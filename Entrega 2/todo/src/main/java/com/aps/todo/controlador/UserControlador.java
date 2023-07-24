@@ -28,7 +28,7 @@ public class UserControlador {
 
 
     @Autowired
-    public UserControlador(UserRepository userRepository) {
+    private UserControlador(UserRepository userRepository) {
         this.userRepository = userRepository;
         httpClient = new RestTemplate();
     }
@@ -40,8 +40,6 @@ public class UserControlador {
 
         return userControlador;
     }
-
-
 
     public ResponseEntity<List<UserModel>> getAllUsers() {
         List<UserModel> users = userRepository.findAll();
@@ -98,8 +96,6 @@ public class UserControlador {
             HttpGet httpGet = new HttpGet(GOOGLE_ENDPOINT);
 
             httpGet.setHeader("Authorization", "Bearer " + token);
-
-            HttpResponse response = httpClient.execute(httpGet);
 
             RestTemplate restTemplate = new RestTemplate();
 
