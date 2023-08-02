@@ -1,28 +1,28 @@
-package com.aps.todo.repositories;
+package com.aps.todo.daos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EpicRepositoryFactory {
+public class EpicDaoFactory {
 
     private final ApplicationContext applicationContext;
 
     @Autowired
-    public EpicRepositoryFactory(ApplicationContext applicationContext) {
+    public EpicDaoFactory(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
-    public EpicRepository createEpicRepository() {
+    public EpicDao createEpicRepository() {
         String activeProfile = applicationContext.getEnvironment().getProperty("spring.profiles.active");
 
         if ("h2".equals(activeProfile)) {
             System.out.println("H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2H2");
-            return  applicationContext.getBean(EpicRepositoryH2.class);
+            return  applicationContext.getBean(EpicDaoH2.class);
         } else if ("postgres".equals(activeProfile)) {
             System.out.println("postgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgrespostgres");
-            return  applicationContext.getBean(EpicRepositoryPostgreSQL.class);
+            return  applicationContext.getBean(EpicDaoPostgreSQL.class);
         } else {
             throw new IllegalArgumentException("Invalid database profile specified.");
         }

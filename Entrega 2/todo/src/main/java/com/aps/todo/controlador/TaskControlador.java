@@ -1,94 +1,130 @@
 package com.aps.todo.controlador;
 
+import com.aps.todo.Repository.IEpicRepository;
+import com.aps.todo.Repository.ITaskRepository;
+import com.aps.todo.Repository.IUserRepository;
 import com.aps.todo.dtos.TaskRecordDto;
 import com.aps.todo.models.EpicModel;
 import com.aps.todo.models.TaskModel;
-import com.aps.todo.repositories.EpicRepository;
-import com.aps.todo.repositories.TaskRepository;
-import com.aps.todo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class TaskControlador {
 
-    private final UserControlador userControlador;
-    private  final EpicRepository epicRepository;
-    private final TaskRepository taskRepository;
+    private final IUserRepository userRepository;
+    private  final IEpicRepository epicRepository;
+    private final ITaskRepository taskRepository;
 
     @Autowired
-    public TaskControlador(TaskRepository taskRepository, UserRepository userRepository, EpicRepository epicRepository) {
+    public TaskControlador(ITaskRepository taskRepository, IUserRepository userRepository, IEpicRepository epicRepository) {
         this.epicRepository = epicRepository;
-        this.userControlador = UserControlador.getInstance(userRepository);
+        this.userRepository = userRepository;
         this.taskRepository = taskRepository;
     }
 
-    public ResponseEntity<List<TaskModel>> getAllTasks(String token) {
-        var user = userControlador.validateUser(token);
+    public ResponseEntity<List<TaskRecordDto>> getAllTasks(String token) {
+        var user = userRepository.validateUser(token);
         if (user != null){
 
             List<TaskModel> tasks = taskRepository.getUserTasks(user.getId().toString());
-            return new ResponseEntity<>(tasks, HttpStatus.OK);
+
+            List<TaskRecordDto> taskDtos = tasks.stream()
+                    .map(task -> new TaskRecordDto(
+                            task.getId(),
+                            task.getEpicId(),
+                            task.getName(),
+                            task.getDescription(),
+                            task.getDueDate(),
+                            task.getInProgress(),
+                            task.getUserId()
+                    ))
+                    .collect(Collectors.toList());
+
+            return new ResponseEntity<>(taskDtos, HttpStatus.OK);
 
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
 
-    public ResponseEntity<TaskModel> getTaskById(String token, Long id) {
-        var user = userControlador.validateUser(token);
-        if (user != null){
+    public ResponseEntity<TaskRecordDto> getTaskById(String token, Long id) {
+        var user = userRepository.validateUser(token);
 
-            TaskModel task = taskRepository.findById(id).orElse(null);
-            if (task == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<>(task, HttpStatus.OK);
-
+        if (user == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        TaskModel task = taskRepository.findById(id).orElse(null);
+
+        if (task == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        TaskRecordDto taskDto = new TaskRecordDto(
+                task.getId(),
+                task.getEpicId(),
+                task.getName(),
+                task.getDescription(),
+                task.getDueDate(),
+                task.getInProgress(),
+                task.getUserId()
+        );
+
+        return new ResponseEntity<>(taskDto, HttpStatus.OK);
+
     }
 
-    public ResponseEntity<TaskModel> createTask(String token,  TaskRecordDto task) {
-        var user = userControlador.validateUser(token);
-        if (user != null){
-
-            TaskModel taskCreated = new TaskModel();
-
-            if(task.epicId() != null){
-                EpicModel epic = epicRepository.findById(task.epicId()).orElse(null);
-
-                epic.setTotalTasks(epic.getTotalTasks() + 1);
-
-                if (!task.inProgress()){
-                    epic.setTasksDone(epic.getTotalTasks() + 1);
-                }
-                epicRepository.save(epic);
-
-                taskCreated.setEpic(epic);
-            }
-
-            taskCreated.setName(task.name());
-            taskCreated.setDescription(task.description());
-            taskCreated.setInProgress(task.inProgress());
-            taskCreated.setDueDate(task.dueDate());
-            taskCreated.setUserId(task.userId());
-
-            taskCreated.setUserId(user.getId().toString());
-            TaskModel createdTask = taskRepository.save(taskCreated);
-            return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+    public ResponseEntity<TaskRecordDto> createTask(String token,  TaskRecordDto task) {
+        var user = userRepository.validateUser(token);
+        if (user == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        TaskModel taskCreated = new TaskModel();
+        taskCreated.setName(task.name());
+        taskCreated.setDescription(task.description());
+        taskCreated.setDueDate(task.dueDate());
+        taskCreated.setEpic(null);
+        taskCreated.setInProgress(task.inProgress());
+        taskCreated.setUserId(user.getId().toString());
+
+        if(task.epicId() != null){
+            EpicModel epic = epicRepository.findById(task.epicId()).orElse(null);
+
+            epic.setTotalTasks(epic.getTotalTasks() + 1);
+
+            if (!task.inProgress()){
+                epic.setTasksDone(epic.getTotalTasks() + 1);
+            }
+            epicRepository.save(epic);
+
+            taskCreated.setEpic(epic);
+        }
+
+        taskRepository.save(taskCreated);
+
+        TaskRecordDto taskDto = new TaskRecordDto(
+                taskCreated.getId(),
+                taskCreated.getEpicId(),
+                taskCreated.getName(),
+                taskCreated.getDescription(),
+                taskCreated.getDueDate(),
+                taskCreated.getInProgress(),
+                taskCreated.getUserId()
+        );
+
+        return new ResponseEntity<>(taskDto, HttpStatus.CREATED);
     }
 
     public ResponseEntity<TaskModel> updateTask(String token, Long id, TaskRecordDto task) {
-        var user = userControlador.validateUser(token);
+        var user = userRepository.validateUser(token);
         if (user != null){
 
             if (!taskRepository.existsById(id)) {
@@ -156,7 +192,7 @@ public class TaskControlador {
     }
 
     public ResponseEntity<Void> deleteTask(String token, Long id) {
-        var user = userControlador.validateUser(token);
+        var user = userRepository.validateUser(token);
         if (user != null){
 
             if (!taskRepository.existsById(id)) {

@@ -7,10 +7,8 @@ import com.aps.todo.dtos.TaskRecordDto;
 import com.aps.todo.models.EpicModel;
 import com.aps.todo.models.TaskModel;
 import com.aps.todo.models.UserModel;
-import com.aps.todo.repositories.*;
-import org.apache.catalina.User;
+import com.aps.todo.daos.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -19,26 +17,46 @@ import java.util.List;
 @Component
 public class Facade {
 
-    private final EpicRepository epicRepository;
-    private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
+    private static Facade instance;
 
+    //@Autowired
+    private final EpicDao epicDao;
 
+    //@Autowired
+    private final TaskDao taskDao;
+
+    //@Autowired
+    private final UserDao userDao;
+
+    //@Autowired
     private EpicControlador epicControlador;
+    //@Autowired
     private UserControlador userControlador;
+    //@Autowired
     private TaskControlador taskControlador;
 
     @Autowired
-    public Facade(EpicControlador epicControlador, TaskControlador taskControlador,
-                  TaskRepositoryFactory taskRepositoryFactory, EpicRepositoryFactory epicRepositoryFactory,
-                  UserRepositoryFactory userRepositoryFactory) {
+    public Facade(EpicControlador epicControlador, TaskControlador taskControlador, UserControlador userControlador,
+                  TaskDaoFactory taskDaoFactory, EpicDaoFactory epicDaoFactory,
+                  UserDaoFactory userDaoFactory) {
         this.epicControlador = epicControlador;
         this.taskControlador = taskControlador;
-        this.epicRepository = epicRepositoryFactory.createEpicRepository();
-        this.taskRepository = taskRepositoryFactory.createTaskRepository();
-        this.userRepository = userRepositoryFactory.createUserRepository();
-        this.userControlador = UserControlador.getInstance(this.userRepository);
-    }
+        this.userControlador = userControlador;
+
+        this.epicDao = epicDaoFactory.createEpicRepository();
+        this.taskDao = taskDaoFactory.createTaskRepository();
+        this.userDao = userDaoFactory.createUserRepository();
+    };
+
+    /*
+    //SINGLETON CLASS RETRIEVE
+    public static synchronized Facade getInstance(){
+        if (instance == null) {
+            instance = new Facade();
+        }
+        return instance;
+    };*/
+
 
     //EPICS
     public ResponseEntity<List<EpicModel>> getAllEpics(String token){
@@ -63,15 +81,15 @@ public class Facade {
 
     // TASKS
 
-    public ResponseEntity<List<TaskModel>> getAllTasks(String token){
+    public ResponseEntity<List<TaskRecordDto>> getAllTasks(String token){
         return this.taskControlador.getAllTasks(token);
     }
 
-    public ResponseEntity<TaskModel> getTaskById(String token, Long id){
+    public ResponseEntity<TaskRecordDto> getTaskById(String token, Long id){
         return this.taskControlador.getTaskById(token, id);
     }
 
-    public ResponseEntity<TaskModel> postNewTask(String token, TaskRecordDto task){
+    public ResponseEntity<TaskRecordDto> postNewTask(String token, TaskRecordDto task){
         return this.taskControlador.createTask(token, task);
     }
 

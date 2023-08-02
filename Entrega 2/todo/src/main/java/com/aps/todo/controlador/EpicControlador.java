@@ -1,9 +1,9 @@
 package com.aps.todo.controlador;
 
+import com.aps.todo.Repository.IEpicRepository;
+import com.aps.todo.Repository.IUserRepository;
 import com.aps.todo.models.EpicModel;
-import com.aps.todo.repositories.EpicRepository;
-import com.aps.todo.repositories.EpicRepositoryFactory;
-import com.aps.todo.repositories.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +14,17 @@ import java.util.List;
 @Component
 public class EpicControlador {
 
-    private final EpicRepository epicRepository;
-    private final UserControlador userControlador;
+    private final IEpicRepository epicRepository;
+    private final IUserRepository userRepository;
 
     @Autowired
-    public EpicControlador(EpicRepository epicRepository, UserRepository userRepository, UserControlador userControlador) {
+    public EpicControlador(IEpicRepository epicRepository, IUserRepository userRepository) {
         this.epicRepository = epicRepository;
-        this.userControlador = userControlador.getInstance(userRepository);
+        this.userRepository = userRepository;
     }
 
     public ResponseEntity<List<EpicModel>> getAllEpics(String token) {
-        var user = userControlador.validateUser(token);
+        var user = userRepository.validateUser(token);
         if (user != null){
             List<EpicModel> epics = epicRepository.getUserEpics(user.getId().toString());
             return new ResponseEntity<>(epics, HttpStatus.OK);
@@ -33,24 +33,27 @@ public class EpicControlador {
     }
 
     public ResponseEntity<EpicModel> getEpicById(String token, Long id) {
-        var user = userControlador.validateUser(token);
+        var user = userRepository.validateUser(token);
 
-        if (user != null){
-            EpicModel epic = epicRepository.findById(id).orElse(null);
-
-            if (epic == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-
-            return new ResponseEntity<>(epic, HttpStatus.OK);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        EpicModel epic = epicRepository.findById(id).orElse(null);
+
+        if (epic == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(epic, HttpStatus.OK);
+
+
+
     }
 
 
     public ResponseEntity<EpicModel> createEpic(String token, EpicModel epic) {
-        var user = userControlador.validateUser(token);
+        var user = userRepository.validateUser(token);
         if (user != null){
 
             epic.setUserId(user.getId().toString());
@@ -63,7 +66,7 @@ public class EpicControlador {
     }
 
     public ResponseEntity<EpicModel> updateEpic(String token, Long id, EpicModel epic) {
-        var user = userControlador.validateUser(token);
+        var user = userRepository.validateUser(token);
         if (user != null){
 
             if (!epicRepository.existsById(id)) {
@@ -79,7 +82,7 @@ public class EpicControlador {
     }
 
     public ResponseEntity<Void> deleteEpic(String token, Long id) {
-        var user = userControlador.validateUser(token);
+        var user = userRepository.validateUser(token);
         if (user != null){
 
             if (!epicRepository.existsById(id)) {

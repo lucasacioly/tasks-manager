@@ -31,10 +31,10 @@ public class EpicModel implements Serializable {
 
     // Constructors, getters e setters
 
-    public void Epic() {
+    public EpicModel() {
     }
 
-    public void Epic(String name, String description, String userId, Integer totalTasks, Integer tasksDone) {
+    public EpicModel(String name, String description, String userId, Integer totalTasks, Integer tasksDone) {
         this.name = name;
         this.description = description;
         this.tasksDone = tasksDone;

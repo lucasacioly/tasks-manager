@@ -1,8 +1,8 @@
 package com.aps.todo.controlador;
 
+import com.aps.todo.Repository.IUserRepository;
 import com.aps.todo.models.GoogleUserModel;
 import com.aps.todo.models.UserModel;
-import com.aps.todo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -22,26 +22,15 @@ import java.util.UUID;
 @Component
 public class UserControlador {
 
-    private static UserControlador userControlador;
     private static RestTemplate httpClient;
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
 
 
     @Autowired
-    public UserControlador(UserRepository userRepository) {
+    public UserControlador(IUserRepository userRepository) {
         this.userRepository = userRepository;
-        httpClient = new RestTemplate();
+        this.httpClient = new RestTemplate();
     }
-
-    @Autowired
-    public static synchronized UserControlador getInstance(UserRepository userRepository){
-        if (userControlador == null)
-            userControlador = new UserControlador(userRepository);
-
-        return userControlador;
-    }
-
-
 
     public ResponseEntity<List<UserModel>> getAllUsers() {
         List<UserModel> users = userRepository.findAll();

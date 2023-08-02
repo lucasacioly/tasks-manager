@@ -3,8 +3,6 @@ package com.aps.todo.controllers;
 import com.aps.todo.Facade;
 import com.aps.todo.dtos.TaskRecordDto;
 import com.aps.todo.models.TaskModel;
-import com.aps.todo.repositories.TaskRepository;
-import com.aps.todo.repositories.TaskRepositoryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,19 +21,19 @@ public class TaskController {
 
     @GetMapping
     @CrossOrigin
-    public ResponseEntity<List<TaskModel>> getAllTasks(@RequestHeader("token") String token) {
+    public ResponseEntity<List<TaskRecordDto>> getAllTasks(@RequestHeader("token") String token) {
         return fachada.getAllTasks(token);
     }
 
     @CrossOrigin
     @GetMapping("/{id}")
-    public ResponseEntity<TaskModel> getTaskById(@RequestHeader("token") String token, @PathVariable Long id) {
+    public ResponseEntity<TaskRecordDto> getTaskById(@RequestHeader("token") String token, @PathVariable Long id) {
         return fachada.getTaskById(token, id);
     }
 
     @PostMapping
     @CrossOrigin
-    public ResponseEntity<TaskModel> createTask(@RequestHeader("token") String token, @RequestBody TaskRecordDto task) {
+    public ResponseEntity<TaskRecordDto> createTask(@RequestHeader("token") String token, @RequestBody TaskRecordDto task) {
         return fachada.postNewTask(token, task);
     }
 

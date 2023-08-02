@@ -28,7 +28,7 @@ public class TaskModel implements Serializable {
     @Column(name = "user_id")
     private String userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "epic_id")
     private EpicModel epic;
 
@@ -80,6 +80,13 @@ public class TaskModel implements Serializable {
 
     public EpicModel  getEpic() {
         return epic;
+    }
+
+    public Long getEpicId() {
+        if (epic != null){
+            return epic.getId();
+        }
+        return null;
     }
 
     public void setEpic(EpicModel  epic) {
