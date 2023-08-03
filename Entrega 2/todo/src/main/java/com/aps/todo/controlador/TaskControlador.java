@@ -132,51 +132,56 @@ public class TaskControlador {
             }
 
             TaskModel taskBd = taskRepository.findById(id).orElse(null);
-            EpicModel epicNew = epicRepository.findById(task.epicId()).orElse(null);
+            TaskModel taskCreated = new TaskModel();
 
-            if (epicNew != null && taskBd != null && taskBd.getEpic()!= null) {
+            if(task.epicId() != null ) {
+                EpicModel epicNew = epicRepository.findById(task.epicId()).orElse(null);
+                if (epicNew != null && taskBd != null && taskBd.getEpic()!= null) {
 
-                // nao troca de epico
-                if (taskBd.getEpic().getId() == task.epicId()) {
-                    if (taskBd.getInProgress() && !task.inProgress()) {
-                        epicNew.setTasksDone(epicNew.getTasksDone() + 1);
-                    }
-                    if (!taskBd.getInProgress() && task.inProgress()) {
-                        epicNew.setTasksDone(epicNew.getTasksDone() - 1);
-                    }
-                } else { // troca de epico
-                    EpicModel epicBD = epicRepository.findById(taskBd.getEpic().getId()).orElse(null);
-
-                    if (epicBD != null) {
-                        epicNew.setTotalTasks(epicNew.getTotalTasks() - 1);
-
-                        if (!taskBd.getInProgress()) {
+                    // nao troca de epico
+                    if (taskBd.getEpic().getId() == task.epicId()) {
+                        if (taskBd.getInProgress() && !task.inProgress()) {
+                            epicNew.setTasksDone(epicNew.getTasksDone() + 1);
+                        }
+                        if (!taskBd.getInProgress() && task.inProgress()) {
                             epicNew.setTasksDone(epicNew.getTasksDone() - 1);
                         }
+                    } else { // troca de epico
+                        EpicModel epicBD = epicRepository.findById(taskBd.getEpic().getId()).orElse(null);
 
-                        epicRepository.save(epicBD);
+                        if (epicBD != null) {
+                            epicNew.setTotalTasks(epicNew.getTotalTasks() - 1);
+
+                            if (!taskBd.getInProgress()) {
+                                epicNew.setTasksDone(epicNew.getTasksDone() - 1);
+                            }
+
+                            epicRepository.save(epicBD);
+                        }
+
+                        epicNew.setTotalTasks(epicNew.getTotalTasks() + 1);
+
+                        if (!task.inProgress()) {
+                            epicNew.setTasksDone(epicNew.getTasksDone() + 1);
+                        }
                     }
-
+                } else if (epicNew != null && taskBd != null && taskBd.getEpic() == null) { // nao tinha epico e ganhou epico
                     epicNew.setTotalTasks(epicNew.getTotalTasks() + 1);
 
                     if (!task.inProgress()) {
                         epicNew.setTasksDone(epicNew.getTasksDone() + 1);
                     }
                 }
-            } else if (epicNew != null && taskBd != null && taskBd.getEpic() == null) { // nao tinha epico e ganhou epico
-                epicNew.setTotalTasks(epicNew.getTotalTasks() + 1);
 
-                if (!task.inProgress()) {
-                    epicNew.setTasksDone(epicNew.getTasksDone() + 1);
-                }
+                epicRepository.save(epicNew);
+                taskCreated.setEpic(epicNew);
+
+            }
+            else{
+                taskCreated.setEpic(null);
             }
 
-            epicRepository.save(epicNew);
-
-
-            TaskModel taskCreated = new TaskModel();
             taskCreated.setId(task.id());
-            taskCreated.setEpic(epicNew);
             taskCreated.setName(task.name());
             taskCreated.setDescription(task.description());
             taskCreated.setInProgress(task.inProgress());

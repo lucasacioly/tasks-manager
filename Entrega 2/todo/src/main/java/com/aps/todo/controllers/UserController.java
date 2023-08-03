@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private Facade fachada;
+    private Facade fachada ;
 
     @Autowired
     public UserController(Facade fachada) {

@@ -32,6 +32,7 @@ public class UserControlador {
         this.httpClient = new RestTemplate();
     }
 
+
     public ResponseEntity<List<UserModel>> getAllUsers() {
         List<UserModel> users = userRepository.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -87,8 +88,6 @@ public class UserControlador {
             HttpGet httpGet = new HttpGet(GOOGLE_ENDPOINT);
 
             httpGet.setHeader("Authorization", "Bearer " + token);
-
-            HttpResponse response = httpClient.execute(httpGet);
 
             RestTemplate restTemplate = new RestTemplate();
 
