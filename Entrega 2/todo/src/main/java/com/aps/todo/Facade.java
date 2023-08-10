@@ -7,7 +7,7 @@ import com.aps.todo.dtos.TaskRecordDto;
 import com.aps.todo.models.EpicModel;
 import com.aps.todo.models.TaskModel;
 import com.aps.todo.models.UserModel;
-import com.aps.todo.daos.*;
+import com.aps.todo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -20,13 +20,13 @@ public class Facade {
     private static Facade instance;
 
     //@Autowired
-    private final EpicDao epicDao;
+    private final EpicRepository epicRepository;
 
     //@Autowired
-    private final TaskDao taskDao;
+    private final TaskRepository taskRepository;
 
     //@Autowired
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
     //@Autowired
     private EpicControlador epicControlador;
@@ -37,15 +37,15 @@ public class Facade {
 
     @Autowired
     public Facade(EpicControlador epicControlador, TaskControlador taskControlador, UserControlador userControlador,
-                  TaskDaoFactory taskDaoFactory, EpicDaoFactory epicDaoFactory,
-                  UserDaoFactory userDaoFactory) {
+                  TaskRepositoryFactory taskRepositoryFactory, EpicRepositoryFactory epicRepositoryFactory,
+                  UserRepositoryFactory userRepositoryFactory) {
         this.epicControlador = epicControlador;
         this.taskControlador = taskControlador;
         this.userControlador = userControlador;
 
-        this.epicDao = epicDaoFactory.createEpicRepository();
-        this.taskDao = taskDaoFactory.createTaskRepository();
-        this.userDao = userDaoFactory.createUserRepository();
+        this.epicRepository = epicRepositoryFactory.createEpicRepository();
+        this.taskRepository = taskRepositoryFactory.createTaskRepository();
+        this.userRepository = userRepositoryFactory.createUserRepository();
     };
 
     /*

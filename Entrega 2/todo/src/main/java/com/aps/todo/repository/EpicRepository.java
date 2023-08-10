@@ -1,4 +1,4 @@
-package com.aps.todo.daos;
+package com.aps.todo.repository;
 
 import com.aps.todo.models.EpicModel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EpicDao extends JpaRepository<EpicModel, Long> {
+public interface EpicRepository extends JpaRepository<EpicModel, Long> {
 
     @Query("SELECT e FROM EpicModel e WHERE e.userId = :userId")
     List<EpicModel> getUserEpics(@Param("userId") String userId);

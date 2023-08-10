@@ -1,6 +1,6 @@
 package com.aps.todo.controlador;
 
-import com.aps.todo.Repository.IUserRepository;
+import com.aps.todo.collection.UserCollection;
 import com.aps.todo.models.GoogleUserModel;
 import com.aps.todo.models.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
-import org.apache.http.HttpResponse;
+
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -23,23 +23,22 @@ import java.util.UUID;
 public class UserControlador {
 
     private static RestTemplate httpClient;
-    private final IUserRepository userRepository;
-
+    private final UserCollection userCollection;
 
     @Autowired
-    public UserControlador(IUserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserControlador(UserCollection userCollection) {
+        this.userCollection = userCollection;
         this.httpClient = new RestTemplate();
     }
 
 
     public ResponseEntity<List<UserModel>> getAllUsers() {
-        List<UserModel> users = userRepository.findAll();
+        List<UserModel> users = userCollection.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     public ResponseEntity<UserModel> getUserById(@PathVariable Long id) {
-        UserModel user = userRepository.findById(id).orElse(null);
+        UserModel user = userCollection.findById(id).orElse(null);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -49,29 +48,29 @@ public class UserControlador {
     public ResponseEntity<UserModel> createUser(@RequestBody UserModel user) {
         String token = UUID.randomUUID().toString();
         user.setOauthToken(token);
-        UserModel createdUser = userRepository.save(user);
+        UserModel createdUser = userCollection.save(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     public ResponseEntity<UserModel> updateUser(@PathVariable Long id, @RequestBody UserModel user) {
-        if (!userRepository.existsById(id)) {
+        if (!userCollection.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        user.setOauthToken(userRepository.getOauthToken(id));
-        UserModel updatedUser = userRepository.save(user);
+        user.setOauthToken(userCollection.getOauthToken(id));
+        UserModel updatedUser = userCollection.save(user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (!userRepository.existsById(id)) {
+        if (!userCollection.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        userRepository.deleteById(id);
+        userCollection.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     public ResponseEntity<UserModel> signIn(@RequestBody String email, @RequestBody String password){
-        var user = userRepository.signIn(email, password);
+        var user = userCollection.signIn(email, password);
         if(user == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -111,17 +110,17 @@ public class UserControlador {
         user.setPassword(googleResponse.getEmail());
         user.setOauthToken(oauthtoken);
 
-        var existUser = userRepository.checkByEmail(user.getEmail());
+        var existUser = userCollection.checkByEmail(user.getEmail());
         if (existUser != null) {
             return new ResponseEntity<>(existUser, HttpStatus.OK);
         }
 
-        var userSaved = userRepository.save(user);
+        var userSaved = userCollection.save(user);
         return new ResponseEntity<>(userSaved, HttpStatus.OK);
     }
 
     public UserModel validateUser(String token){
-        var user = userRepository.validateUser(token);
+        var user = userCollection.validateUser(token);
         return user;
     }
 }

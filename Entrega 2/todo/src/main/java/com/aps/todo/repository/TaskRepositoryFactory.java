@@ -1,25 +1,25 @@
-package com.aps.todo.daos;
+package com.aps.todo.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskDaoFactory {
+public class TaskRepositoryFactory {
     private final ApplicationContext applicationContext;
 
     @Autowired
-    public TaskDaoFactory(ApplicationContext applicationContext) {
+    public TaskRepositoryFactory(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
-    public TaskDao createTaskRepository() {
+    public TaskRepository createTaskRepository() {
         String activeProfile = applicationContext.getEnvironment().getProperty("spring.profiles.active");
 
         if ("h2".equals(activeProfile)) {
-            return  applicationContext.getBean(TaskDaoH2.class);
+            return  applicationContext.getBean(TaskRepositoryH2.class);
         } else if ("postgres".equals(activeProfile)) {
-            return  applicationContext.getBean(TaskDaoPostgreSQL.class);
+            return  applicationContext.getBean(TaskRepositoryPostgreSQL.class);
         } else {
             throw new IllegalArgumentException("Invalid database profile specified.");
         }

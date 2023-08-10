@@ -1,10 +1,10 @@
-package com.aps.todo.daos;
+package com.aps.todo.repository;
 
 
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserDaoH2 extends UserDao {
+public interface UserRepositoryH2 extends UserRepository {
 
     // Adicione métodos personalizados de consulta, se necessário
 

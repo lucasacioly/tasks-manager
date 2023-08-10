@@ -1,4 +1,4 @@
-package com.aps.todo.daos;
+package com.aps.todo.repository;
 
 import com.aps.todo.models.TaskModel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TaskDao extends JpaRepository<TaskModel, Long> {
+public interface TaskRepository extends JpaRepository<TaskModel, Long> {
 
     @Query("SELECT t FROM TaskModel t WHERE t.userId = :userId")
     List<TaskModel> getUserTasks(@Param("userId") String userId);
