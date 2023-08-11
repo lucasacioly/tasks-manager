@@ -94,7 +94,7 @@ public class TaskControlador {
         taskCreated.setUserId(user.getId().toString());
 
         if(task.epicId() != null){
-            EpicModel epic = epicCollection.findById(task.epicId()).orElse(null);
+            EpicModel epic = epicCollection.findById(task.epicId()).getBody();
 
             epic.setTotalTasks(epic.getTotalTasks() + 1);
 
@@ -133,7 +133,7 @@ public class TaskControlador {
             TaskModel taskCreated = new TaskModel();
 
             if(task.epicId() != null ) {
-                EpicModel epicNew = epicCollection.findById(task.epicId()).orElse(null);
+                EpicModel epicNew = epicCollection.findById(task.epicId()).getBody();
                 if (epicNew != null && taskBd != null && taskBd.getEpic()!= null) {
 
                     // nao troca de epico
@@ -145,7 +145,7 @@ public class TaskControlador {
                             epicNew.setTasksDone(epicNew.getTasksDone() - 1);
                         }
                     } else { // troca de epico
-                        EpicModel epicBD = epicCollection.findById(taskBd.getEpic().getId()).orElse(null);
+                        EpicModel epicBD = epicCollection.findById(taskBd.getEpic().getId()).getBody();
 
                         if (epicBD != null) {
                             epicNew.setTotalTasks(epicNew.getTotalTasks() - 1);

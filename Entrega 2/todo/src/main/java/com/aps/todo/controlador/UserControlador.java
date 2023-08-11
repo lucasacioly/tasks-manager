@@ -1,20 +1,14 @@
 package com.aps.todo.controlador;
 
 import com.aps.todo.collection.UserCollection;
-import com.aps.todo.models.GoogleUserModel;
+import com.aps.todo.googleApi.IgoogleLoginApi;
 import com.aps.todo.models.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import java.io.IOException;
-
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,10 +18,12 @@ public class UserControlador {
 
     private static RestTemplate httpClient;
     private final UserCollection userCollection;
+    private final IgoogleLoginApi googleLoginApi;
 
     @Autowired
-    public UserControlador(UserCollection userCollection) {
+    public UserControlador(UserCollection userCollection, IgoogleLoginApi googleLoginApi) {
         this.userCollection = userCollection;
+        this.googleLoginApi = googleLoginApi;
         this.httpClient = new RestTemplate();
     }
 
@@ -80,48 +76,7 @@ public class UserControlador {
     }
 
     public ResponseEntity<UserModel> googleLogin(String token) {
-        String GOOGLE_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo";
-
-        GoogleUserModel googleResponse = null;
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(GOOGLE_ENDPOINT);
-
-            httpGet.setHeader("Authorization", "Bearer " + token);
-
-            RestTemplate restTemplate = new RestTemplate();
-
-            ResponseEntity<GoogleUserModel> resp = restTemplate.exchange(
-                    GOOGLE_ENDPOINT,
-                    HttpMethod.GET,
-                    null,
-                    GoogleUserModel.class
-            );
-
-            googleResponse = resp.getBody();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String oauthtoken = UUID.randomUUID().toString();
-        UserModel user = new UserModel();
-        user.setUsername(googleResponse.getName());
-        user.setEmail(googleResponse.getEmail());
-        user.setPassword(googleResponse.getEmail());
-        user.setOauthToken(oauthtoken);
-
-        var existUser = userCollection.checkByEmail(user.getEmail());
-        if (existUser != null) {
-            return new ResponseEntity<>(existUser, HttpStatus.OK);
-        }
-
-        var userSaved = userCollection.save(user);
-        return new ResponseEntity<>(userSaved, HttpStatus.OK);
-    }
-
-    public UserModel validateUser(String token){
-        var user = userCollection.validateUser(token);
-        return user;
+        return googleLoginApi.googleLogin(token);
     }
 }
 

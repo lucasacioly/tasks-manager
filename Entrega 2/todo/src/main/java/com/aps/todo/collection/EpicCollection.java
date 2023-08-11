@@ -3,6 +3,8 @@ package com.aps.todo.collection;
 import com.aps.todo.repository.EpicRepository;
 import com.aps.todo.models.EpicModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,13 +25,18 @@ public class EpicCollection {
         return this.epicRepository.getUserEpics(userId);
     }
 
-    public Optional<EpicModel> findById(Long id) {
-        return this.epicRepository.findById(id);
+    public ResponseEntity<EpicModel> findById(Long id) {
+
+        EpicModel epic = this.epicRepository.findById(id).orElse(null);
+
+        if (epic == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(epic, HttpStatus.OK);
     }
 
-    public EpicModel save(EpicModel epic) {
-        return this.epicRepository.save(epic);
-    }
+    public EpicModel save(EpicModel epic) { return this.epicRepository.save(epic); }
 
 
     public boolean existsById(Long id) {
