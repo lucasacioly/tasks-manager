@@ -9,7 +9,8 @@ public class GoogleUserModel {
     private String email;
     private boolean email_verified;
     private String locale;
-    private String hd;
+
+    public GoogleUserModel(){}
 
     public String getEmail(){
         return this.email;
@@ -20,3 +21,4 @@ public class GoogleUserModel {
     }
 
 }
+

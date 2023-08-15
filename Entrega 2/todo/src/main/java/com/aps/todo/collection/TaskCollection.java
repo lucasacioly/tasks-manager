@@ -11,7 +11,7 @@ import java.util.Optional;
 @Component
 public class TaskCollection {
 
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     @Autowired
     public TaskCollection(TaskRepository taskRepository){

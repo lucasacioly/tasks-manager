@@ -39,7 +39,14 @@ public class EpicControlador {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return epicCollection.findById(id);
+
+        EpicModel epic = epicCollection.findById(id).orElse(null);
+
+        if (epic == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(epic, HttpStatus.OK);
 
     }
 

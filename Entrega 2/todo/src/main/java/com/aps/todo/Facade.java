@@ -17,17 +17,6 @@ import java.util.List;
 @Component
 public class Facade {
 
-    private static Facade instance;
-
-    //@Autowired
-    private final EpicRepository epicRepository;
-
-    //@Autowired
-    private final TaskRepository taskRepository;
-
-    //@Autowired
-    private final UserRepository userRepository;
-
     //@Autowired
     private EpicControlador epicControlador;
     //@Autowired
@@ -43,9 +32,9 @@ public class Facade {
         this.taskControlador = taskControlador;
         this.userControlador = userControlador;
 
-        this.epicRepository = epicRepositoryFactory.createEpicRepository();
-        this.taskRepository = taskRepositoryFactory.createTaskRepository();
-        this.userRepository = userRepositoryFactory.createUserRepository();
+        epicRepositoryFactory.createEpicRepository();
+        taskRepositoryFactory.createTaskRepository();
+        userRepositoryFactory.createUserRepository();
     };
 
     /*

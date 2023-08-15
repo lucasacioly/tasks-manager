@@ -14,7 +14,7 @@ import java.util.Optional;
 public class EpicCollection {
 
 
-    private EpicRepository epicRepository;
+    private final EpicRepository epicRepository;
 
     @Autowired
     public EpicCollection(EpicRepository epicRepository){
@@ -25,15 +25,8 @@ public class EpicCollection {
         return this.epicRepository.getUserEpics(userId);
     }
 
-    public ResponseEntity<EpicModel> findById(Long id) {
-
-        EpicModel epic = this.epicRepository.findById(id).orElse(null);
-
-        if (epic == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(epic, HttpStatus.OK);
+    public Optional<EpicModel> findById(Long id) {
+        return this.epicRepository.findById(id);
     }
 
     public EpicModel save(EpicModel epic) { return this.epicRepository.save(epic); }

@@ -16,15 +16,13 @@ import java.util.UUID;
 @Component
 public class UserControlador {
 
-    private static RestTemplate httpClient;
     private final UserCollection userCollection;
     private final IgoogleLoginApi googleLoginApi;
 
     @Autowired
-    public UserControlador(UserCollection userCollection, IgoogleLoginApi googleLoginApi) {
+    public UserControlador(IgoogleLoginApi googleLoginApi, UserCollection userCollection) {
         this.userCollection = userCollection;
         this.googleLoginApi = googleLoginApi;
-        this.httpClient = new RestTemplate();
     }
 
 

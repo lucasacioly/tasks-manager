@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class TaskControlador {
 
     private final UserCollection userCollection;
-    private  final EpicCollection epicCollection;
+    private final EpicCollection epicCollection;
     private final TaskCollection taskCollection;
 
     @Autowired
@@ -94,7 +94,7 @@ public class TaskControlador {
         taskCreated.setUserId(user.getId().toString());
 
         if(task.epicId() != null){
-            EpicModel epic = epicCollection.findById(task.epicId()).getBody();
+            EpicModel epic = epicCollection.findById(task.epicId()).orElse(null);
 
             epic.setTotalTasks(epic.getTotalTasks() + 1);
 
@@ -133,7 +133,7 @@ public class TaskControlador {
             TaskModel taskCreated = new TaskModel();
 
             if(task.epicId() != null ) {
-                EpicModel epicNew = epicCollection.findById(task.epicId()).getBody();
+                EpicModel epicNew = epicCollection.findById(task.epicId()).orElse(null);
                 if (epicNew != null && taskBd != null && taskBd.getEpic()!= null) {
 
                     // nao troca de epico
@@ -145,7 +145,7 @@ public class TaskControlador {
                             epicNew.setTasksDone(epicNew.getTasksDone() - 1);
                         }
                     } else { // troca de epico
-                        EpicModel epicBD = epicCollection.findById(taskBd.getEpic().getId()).getBody();
+                        EpicModel epicBD = epicCollection.findById(taskBd.getEpic().getId()).orElse(null);
 
                         if (epicBD != null) {
                             epicNew.setTotalTasks(epicNew.getTotalTasks() - 1);
