@@ -1,14 +1,14 @@
 package com.aps.todo.controlador;
 
 import com.aps.todo.collection.UserCollection;
-import com.aps.todo.googleApi.IgoogleLoginApi;
+import com.aps.todo.googleApi.GoogleLoginApi;
+import com.aps.todo.googleApi.IGoogleLoginApi;
 import com.aps.todo.models.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,12 +17,12 @@ import java.util.UUID;
 public class UserControlador {
 
     private final UserCollection userCollection;
-    private final IgoogleLoginApi googleLoginApi;
+    private final IGoogleLoginApi googleLoginApi;
 
     @Autowired
-    public UserControlador(IgoogleLoginApi googleLoginApi, UserCollection userCollection) {
+    public UserControlador(UserCollection userCollection) {
         this.userCollection = userCollection;
-        this.googleLoginApi = googleLoginApi;
+        this.googleLoginApi = GoogleLoginApi.getInstance();
     }
 
 
@@ -74,7 +74,15 @@ public class UserControlador {
     }
 
     public ResponseEntity<UserModel> googleLogin(String token) {
-        return googleLoginApi.googleLogin(token);
+        UserModel user = googleLoginApi.googleLogin(token);
+
+        var existUser = userCollection.checkByEmail(user.getEmail());
+        if (existUser != null) {
+            return new ResponseEntity<>(existUser, HttpStatus.OK);
+        }
+
+        var userSaved = userCollection.save(user);
+        return new ResponseEntity<>(userSaved, HttpStatus.OK);
     }
 }
 

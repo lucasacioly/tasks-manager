@@ -1,25 +1,27 @@
 package com.aps.todo.googleApi;
 
-import com.aps.todo.collection.UserCollection;
 import com.aps.todo.models.GoogleUserModel;
 import com.aps.todo.models.UserModel;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.UUID;
 
-@Component
-public class googleLoginApi implements IgoogleLoginApi{
+public class GoogleLoginApi implements IGoogleLoginApi {
 
-    private final UserCollection userCollection;
+    private static GoogleLoginApi instance;
 
-    public googleLoginApi(UserCollection userCollection){
-        this.userCollection = userCollection;
+    private GoogleLoginApi(){}
+
+    public static synchronized GoogleLoginApi getInstance(){
+        if (instance == null)
+            instance = new GoogleLoginApi();
+
+        return instance;
     }
 
     @Override
-    public ResponseEntity<UserModel> googleLogin(String token) {
+    public UserModel googleLogin(String token) {
         if (token.endsWith("=")) {
             token = token.substring(0, token.length() - 1);
         }
@@ -47,12 +49,6 @@ public class googleLoginApi implements IgoogleLoginApi{
         user.setPassword(oauthtoken);
         user.setOauthToken(oauthtoken);
 
-        var existUser = userCollection.checkByEmail(user.getEmail());
-        if (existUser != null) {
-            return new ResponseEntity<>(existUser, HttpStatus.OK);
-        }
-
-        var userSaved = userCollection.save(user);
-        return new ResponseEntity<>(userSaved, HttpStatus.OK);
+        return user;
     }
 }
