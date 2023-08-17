@@ -9,6 +9,7 @@ import com.aps.todo.models.TaskModel;
 import com.aps.todo.models.UserModel;
 import com.aps.todo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -23,18 +24,25 @@ public class Facade {
     private UserControlador userControlador;
     //@Autowired
     private TaskControlador taskControlador;
+    private ApplicationContext applicationContext;
 
+    private repositoryFactory repositoryFactory;
     @Autowired
-    public Facade(EpicControlador epicControlador, TaskControlador taskControlador, UserControlador userControlador,
-                  TaskRepositoryFactory taskRepositoryFactory, EpicRepositoryFactory epicRepositoryFactory,
-                  UserRepositoryFactory userRepositoryFactory) {
+    public Facade(EpicControlador epicControlador, TaskControlador taskControlador, UserControlador userControlador, repositoryFactory repositoryFactory, ApplicationContext applicationContext) {
         this.epicControlador = epicControlador;
         this.taskControlador = taskControlador;
         this.userControlador = userControlador;
 
-        epicRepositoryFactory.createEpicRepository();
-        taskRepositoryFactory.createTaskRepository();
-        userRepositoryFactory.createUserRepository();
+        String activeProfile = applicationContext.getEnvironment().getProperty("spring.profiles.active");
+
+        if ("h2".equals(activeProfile)) {
+            repositoryFactory = new H2factory(applicationContext);
+        } else if ("postgres".equals(activeProfile)) {
+            repositoryFactory = new PostgreSQLFactory(applicationContext);
+        }
+        repositoryFactory.createEpicRepository();
+        repositoryFactory.createTaskRepository();
+        repositoryFactory.createUserRepository();
     };
 
     /*
