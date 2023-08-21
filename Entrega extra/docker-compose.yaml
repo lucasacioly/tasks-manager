@@ -1,0 +1,18 @@
+version: "3"
+services:
+  auth:
+    image: auth
+    ports:
+      - "8081:8080"
+    networks:
+      - mynetwork
+
+  api:
+    image: crud
+    ports:
+      - "8082:8080"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
