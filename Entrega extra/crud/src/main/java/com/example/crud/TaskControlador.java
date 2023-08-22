@@ -137,7 +137,7 @@ public class TaskControlador {
     }
 
     private String validateUser(String token){
-        String userAppUrl = "http://localhost:8081/users/validateUser";
+        String userAppUrl = "http://auth:8080/users/validateUser";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
