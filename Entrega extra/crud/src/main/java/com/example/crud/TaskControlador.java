@@ -1,12 +1,7 @@
 package com.example.crud;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -20,14 +15,14 @@ public class TaskControlador {
 
     private final TaskCollection taskCollection;
 
-    @Autowired
-    public TaskControlador(TaskCollection taskCollection) {
 
+    public TaskControlador(TaskCollection taskCollection) {
         this.taskCollection = taskCollection;
     }
 
     public ResponseEntity<List<TaskRecordDTO>> getAllTasks(String token) {
         var userId = validateUser(token);
+
         if (userId != null){
             List<TaskModel> tasks = taskCollection.getUserTasks(userId);
 
@@ -142,23 +137,24 @@ public class TaskControlador {
     }
 
     private String validateUser(String token){
-        String otherAppUrl = "http://localhost:8081"; 
-        String endpoint = "/validateUser";
+        String userAppUrl = "localhost:8081/users/validateUser";
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("token", token);
 
-        RequestEntity<?> requestEntity = RequestEntity.get(URI.create(otherAppUrl + endpoint))
-                .headers(headers)
-                .build();
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(userAppUrl, HttpMethod.GET, requestEntity, String.class);
 
-        String userId = response.getBody();
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        } else {
+            return null;
+        }
 
-        return userId;
     }
+
 }

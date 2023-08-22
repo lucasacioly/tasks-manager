@@ -2,6 +2,7 @@ package com.example.auth;
 
 import com.example.auth.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -59,10 +60,9 @@ public class UserController {
         return userControlador.googleLogin(token);
     }
 
-    @PostMapping("/validateUser")
+    @GetMapping("/validateUser")
     @CrossOrigin
-    public ResponseEntity<String> validateUser(@RequestBody String token){
+    public ResponseEntity<String> validateUser(@RequestHeader("token") String token){
         return userControlador.validateUser(token);
     }
-
 }

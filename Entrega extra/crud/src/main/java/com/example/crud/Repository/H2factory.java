@@ -19,5 +19,4 @@ public class H2factory implements RepositoryFactory{
     public TaskRepository createTaskRepository() {
         return applicationContext.getBean(TaskRepository.class);
     }
-
 }

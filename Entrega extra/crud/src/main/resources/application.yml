@@ -1,0 +1,16 @@
+management:
+  health:
+    circuitbreaker:
+      enable: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
