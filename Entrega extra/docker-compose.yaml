@@ -1,18 +1,31 @@
 version: "3"
 services:
   auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
     image: auth
-    ports:
-      - "8081:8080"
     networks:
       - mynetwork
 
   api:
+    build:
+      context: ./crud
+      dockerfile: Dockerfile
     image: crud
-    ports:
-      - "8082:8080"
     networks:
       - mynetwork
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+
+    ports:
+      - 80:80
+    networks:
+      - mynetwork
+
 
 networks:
   mynetwork:
