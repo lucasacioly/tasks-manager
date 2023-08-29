@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/auth/users")
 public class UserController {
     private UserControlador userControlador ;
 
@@ -23,7 +23,7 @@ public class UserController {
         return userControlador.getAllUsers();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/auth/{id}")
     @CrossOrigin
     public ResponseEntity<UserModel> getUserById(@PathVariable Long id) {
         return userControlador.getUserById(id);
@@ -35,32 +35,32 @@ public class UserController {
         return userControlador.createUser(user);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/auth/{id}")
     @CrossOrigin
     public ResponseEntity<UserModel> updateUser(@PathVariable Long id, @RequestBody UserModel user){
         return userControlador.updateUser(id, user);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/auth/{id}")
     @CrossOrigin
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         return userControlador.deleteUser(id);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/auth/signin")
     @CrossOrigin
     public ResponseEntity<UserModel> signIn(@RequestBody SignInParameters input) {
 
         return userControlador.signIn(input.email, input.password);
     }
 
-    @PostMapping("googleLogin")
+    @PostMapping("/auth/googleLogin")
     @CrossOrigin
     public ResponseEntity<UserModel> googleLogin(@RequestBody String token){
         return userControlador.googleLogin(token);
     }
 
-    @GetMapping("/validateUser")
+    @GetMapping("/auth/validateUser")
     @CrossOrigin
     public ResponseEntity<String> validateUser(@RequestHeader("token") String token){
         return userControlador.validateUser(token);
