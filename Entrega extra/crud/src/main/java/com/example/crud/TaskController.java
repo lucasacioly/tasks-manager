@@ -23,7 +23,7 @@ public class TaskController {
     }
 
     @CrossOrigin
-    @GetMapping("/api/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<TaskRecordDTO> getTaskById(@RequestHeader("token") String token, @PathVariable Long id) {
         return taskControlador.getTaskById(token, id);
     }
@@ -35,13 +35,13 @@ public class TaskController {
     }
 
     @CrossOrigin
-    @PutMapping("/api/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<TaskModel> updateTask(@RequestHeader("token") String token, @PathVariable Long id, @RequestBody TaskRecordDTO task){
         return taskControlador.updateTask(token, id, task);
     }
 
     @CrossOrigin
-    @DeleteMapping("/api/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@RequestHeader("token") String token, @PathVariable Long id) {
         return taskControlador.deleteTask(token, id);
     }

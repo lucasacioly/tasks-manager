@@ -23,7 +23,7 @@ public class UserController {
         return userControlador.getAllUsers();
     }
 
-    @GetMapping("/auth/{id}")
+    @GetMapping("/{id}")
     @CrossOrigin
     public ResponseEntity<UserModel> getUserById(@PathVariable Long id) {
         return userControlador.getUserById(id);
@@ -35,32 +35,32 @@ public class UserController {
         return userControlador.createUser(user);
     }
 
-    @PutMapping("/auth/{id}")
+    @PutMapping("/{id}")
     @CrossOrigin
     public ResponseEntity<UserModel> updateUser(@PathVariable Long id, @RequestBody UserModel user){
         return userControlador.updateUser(id, user);
     }
 
-    @DeleteMapping("/auth/{id}")
+    @DeleteMapping("/{id}")
     @CrossOrigin
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         return userControlador.deleteUser(id);
     }
 
-    @PostMapping("/auth/signin")
+    @PostMapping("/signin")
     @CrossOrigin
     public ResponseEntity<UserModel> signIn(@RequestBody SignInParameters input) {
 
         return userControlador.signIn(input.email, input.password);
     }
 
-    @PostMapping("/auth/googleLogin")
+    @PostMapping("/googleLogin")
     @CrossOrigin
     public ResponseEntity<UserModel> googleLogin(@RequestBody String token){
         return userControlador.googleLogin(token);
     }
 
-    @GetMapping("/auth/validateUser")
+    @GetMapping("/validateUser")
     @CrossOrigin
     public ResponseEntity<String> validateUser(@RequestHeader("token") String token){
         return userControlador.validateUser(token);
