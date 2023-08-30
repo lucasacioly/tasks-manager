@@ -1,5 +1,6 @@
 package com.example.crud;
 
+import com.example.crud.UserSystemCom.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -14,14 +15,16 @@ import java.util.stream.Collectors;
 public class TaskControlador {
 
     private final TaskCollection taskCollection;
+    private final IUserService userService;
 
 
-    public TaskControlador(TaskCollection taskCollection) {
+    public TaskControlador(TaskCollection taskCollection, IUserService userService) {
         this.taskCollection = taskCollection;
+        this.userService = userService;
     }
 
     public ResponseEntity<List<TaskRecordDTO>> getAllTasks(String token) {
-        var userId = validateUser(token);
+        var userId = userService.validateUser(token);
 
         if (userId != null){
             List<TaskModel> tasks = taskCollection.getUserTasks(userId);
@@ -45,7 +48,7 @@ public class TaskControlador {
     }
 
     public ResponseEntity<TaskRecordDTO> getTaskById(String token, Long id) {
-        var userId = validateUser(token);
+        var userId = userService.validateUser(token);
 
         if (userId == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -71,7 +74,7 @@ public class TaskControlador {
     }
 
     public ResponseEntity<TaskRecordDTO> createTask(String token,  TaskRecordDTO task) {
-        var userId = validateUser(token);
+        var userId = userService.validateUser(token);
         if (userId == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
@@ -99,7 +102,7 @@ public class TaskControlador {
     }
 
     public ResponseEntity<TaskModel> updateTask(String token, Long id, TaskRecordDTO task) {
-        var userId = validateUser(token);
+        var userId = userService.validateUser(token);
         if (userId != null){
 
             if (!taskCollection.existsById(id)) {
@@ -122,7 +125,7 @@ public class TaskControlador {
     }
 
     public ResponseEntity<Void> deleteTask(String token, Long id) {
-        var userId = validateUser(token);
+        var userId = userService.validateUser(token);
         if (userId != null){
 
             if (!taskCollection.existsById(id)) {
@@ -133,27 +136,6 @@ public class TaskControlador {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-
-    }
-
-    private String validateUser(String token){
-        String userAppUrl = "http://gateway:80/auth/users/validateUser";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("token", token);
-
-        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<String> response = restTemplate.exchange(userAppUrl, HttpMethod.GET, requestEntity, String.class);
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            return response.getBody();
-        } else {
-            return null;
-        }
 
     }
 
