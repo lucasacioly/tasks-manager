@@ -30,6 +30,8 @@ Um gerenciador de tarefas :)
 
 **Back-end:** Spring, H2
 
+**Branches:** Na branch main está o código RUP, e na branch SOA está o código SOA
+
 
 ## Autores
 
