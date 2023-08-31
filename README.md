@@ -19,9 +19,9 @@ Um gerenciador de tarefas :)
 
 [Figma](https://www.figma.com/file/cUCzaQh6hjB6Bj0STDFqpz/Tasks-Manager?type=design&node-id=0%3A1&mode=design&t=6w9Z3371dmRGQQ8y-1)
 
-[Diagramas SOA pt1](https://online.visual-paradigm.com/share.jsp?id=323636343737312d31#diagram:workspace=acnbcjhx&proj=0&id=1)
+[Diagramas SOA pt1](https://drive.google.com/file/d/1wlZLp1rFdKoWxnPI9vhF2s-6yxQhWaI-/view?usp=sharing)
 
-[Diagramas SOA pt2](https://online.visual-paradigm.com/share.jsp?id=323636343737312d32#diagram:workspace=acnbcjhx&proj=0&id=2)
+[Diagramas SOA pt2](https://drive.google.com/file/d/17DVCshYknUfBW-w3utumWel6M7DAGgUg/view?usp=sharing)
 
 [Diagramas RUP](https://online.visual-paradigm.com/share.jsp?id=323636343737312d33#diagram:workspace=acnbcjhx&proj=0&id=3)
 ## Stack utilizada
