@@ -23,7 +23,7 @@ Um gerenciador de tarefas :)
 
 [Diagramas SOA pt2](https://drive.google.com/file/d/17DVCshYknUfBW-w3utumWel6M7DAGgUg/view?usp=sharing)
 
-[Diagramas RUP](https://online.visual-paradigm.com/share.jsp?id=323636343737312d33#diagram:workspace=acnbcjhx&proj=0&id=3)
+[Diagramas RUP](https://drive.google.com/file/d/17DVCshYknUfBW-w3utumWel6M7DAGgUg/view?usp=sharing)
 ## Stack utilizada
 
 **Front-end:** React, AntDesign, Styled Components, Next.js
